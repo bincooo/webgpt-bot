@@ -1,33 +1,18 @@
-<h1 align="center">ChatGPT-wechat-bot🤖</h1>
-<p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
-  <a href="#" target="_blank">
-    <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
-  </a>
-</p>
 
 > 几步即可获得一个基于 ChatGPT 的微信机器人 🤖。
 > [English](README.md) | 中文文档
 
-## 注意 ❎
-
-chatGPT 开启了 Cloudflare 保护。现在暂时不能用了。
-<https://github.com/transitive-bullshit/chatgpt-api/issues/96>
-
-小伙伴们可尝试一下这种方法
-
-<https://github.com/transitive-bullshit/chatgpt-api#update-december-11-2022>
 
 ## Support
 
-- [x] 支持上下文语境的对话。
-- [x] 支持重置上下文语境，通过关键词(reset)重置对话上下文语境。
-- [x] 支持在群聊@你的机器人 🤖，@机器人即可收到回复。
-- [x] 支持通过关键词唤醒你的机器人，如当在群组中发送“@机器人 hello xxxx”时才会收到回复。
-- [x] 支持 Docker 运行。
-- [x] 支持设置重试次数，当请求 ChatGPT 错误时，会自动重试。
-- [ ] 捕获错误并重试。
-- [ ] 其他
+- ✅ 支持上下文语境的对话。
+- ✅ 支持重置上下文语境，通过关键词(reset)重置对话上下文语境。
+- ✅ 支持在群聊@你的机器人 🤖，@机器人即可收到回复。
+- ✅ 支持通过关键词唤醒你的机器人，如当在群组中发送“@机器人 hello xxxx”时才会收到回复。
+- ✅ 支持 Docker 运行。
+- ✅ 支持设置重试次数，当请求 ChatGPT 错误时，会自动重试。
+- ❓ 捕获错误并重试。
+- ❓ 其他
 
 ## 默认配置
 
