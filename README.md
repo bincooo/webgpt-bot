@@ -138,5 +138,6 @@ docker logs -f [container_name or container_id]
 
 欢迎贡献你的代码以及想法 🍵。
 forked By： [AutumnWhj/ChatGPT-wechat-bot](https://github.com/AutumnWhj/ChatGPT-wechat-bot)
+
 forked By： [transitive-bullshit/chatgpt-api](https://github.com/transitive-bullshit/chatgpt-api)
 感谢以上作者提供的代码与帮助
