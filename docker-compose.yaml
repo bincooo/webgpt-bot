@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  test:
+    build: .
+    image: wechat-bot:latest
+    restart: always
+    ports:
+      - 5900:5900
+    extra_hosts:
+      - "master.io:10.0.20.17"
+
