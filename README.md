@@ -77,6 +77,8 @@ docker compose down
 // 微信扫码登录阶段可用这个查看
 docker logs -f [container_name or container_id]
 ```
+## 视频教程
+[在无界面Linux上部署chatgpt微信机器人](https://www.bilibili.com/video/BV1JP4y1i7Kw/)
 
 ## 开始设置机器人 🤖
 
