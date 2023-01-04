@@ -1,29 +1,21 @@
 import { ChatGPTAPIBrowser } from 'cgpt';
 import pTimeout from 'p-timeout';
 import config from './config';
-import { retryRequest, buildLazyMsg } from './utils';
+import { retryRequest, buildLazyMessage } from './utils';
 
 let isWait = false
 const conversationMap = new Map();
 const contentMap = new Map();
-const asyncOnMessage = buildLazyMsg(contentMap)
-/*
-const chatGPT = new ChatGPTAPI({
-  sessionToken: config.chatGPTSessionToken,
-  clearanceToken: config.clearanceToken,
-  userAgent: config.userAgent,
-});
-*/
-
+const asyncOnMessage = buildLazyMessage(contentMap)
 
 
 const API = new ChatGPTAPIBrowser({
     email: config.email,
     password: config.password,
-    debug: false,
+    debug: true,
     minimize: true,
     asyncOnMessage,
-    nopechaKey: true,
+    captchaSolver: true,
     proxyServer: config.proxyServer
 })
 await API.initSession()
@@ -40,10 +32,10 @@ async function getConversation(contactId: string) {
   if (conversationMap.has(contactId)) {
     return conversationMap.get(contactId);
   }
-  const res: any = await API.sendMessage('你好！')
-  conversationMap.set(contactId, {
+  const res: any = await API.sendMessage('哟')
+    conversationMap.set(contactId, {
     conversationId: res.conversationId,
-	messageId: res.messageId
+	  messageId: res.messageId
   })
   
   return conversationMap.get(contactId)
@@ -75,6 +67,17 @@ async function getChatGPTReply(contact, content, contactId) {
   return 'ok'
 }
 
+export async function resetSession() {
+  try {
+    await this.resetSession()
+  } catch (err) {
+    console.warn(
+      `chatgpt error re-authenticating ${config.email}`,
+      err.toString()
+    )
+  }
+}
+
 export async function replyMessage(contact, content, contactId) {
   try {
     if (
@@ -91,21 +94,21 @@ export async function replyMessage(contact, content, contactId) {
     }
     isWait = true
 	
-	// 角色扮演
-	if (config.cosplay && config.cosplay.length > 0) {
-	  for (let i in config.cosplay) {
-	    const c = config.cosplay[i]
-		if (content.trim() === c.key) {
-		  await retryRequest(
-		    () => getChatGPTReply(contact, c.msg, contactId),
-		    config.retryTimes,
-		    500
-		  );
-		  isWait = false
-		  return
-		}
-	  }
-	}
+  	// 角色扮演
+  	if (config.cosplay && config.cosplay.length > 0) {
+  	  for (let i in config.cosplay) {
+  	    const c = config.cosplay[i]
+    		if (content.trim() === c.key) {
+    		  await retryRequest(
+    		    () => getChatGPTReply(contact, c.msg, contactId),
+    		    config.retryTimes,
+    		    500
+    		  );
+    		  isWait = false
+    		  return
+    		}
+  	  }
+  	}
 	
     
     const message = await retryRequest(
@@ -113,7 +116,7 @@ export async function replyMessage(contact, content, contactId) {
       config.retryTimes,
       500
     );
-	isWait = false
+	  isWait = false
 
     if (
       (contact.topic && contact?.topic() && config.groupReplyMode) ||

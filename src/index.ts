@@ -2,7 +2,7 @@ import { WechatyBuilder } from 'wechaty';
 import qrcodeTerminal from 'qrcode-terminal';
 import { v4 as uuid } from 'uuid'
 import config from './config';
-import { replyMessage } from './chatgpt';
+import { replyMessage, resetSession } from './chatgpt';
 
 const roomMap = new Map()
 
@@ -45,6 +45,11 @@ async function onMessage(msg) {
     }
   } else if (isText) {
     console.log(`talker: ${alias} content: ${content}`);
+    if (content.trim() === 'reboot'
+      && alias === 'master') {
+      await resetSession()
+      return
+    }
     if (config.autoReply) {
       if (content.startsWith(config.privateKey)) {
         replyMessage(
