@@ -12,7 +12,7 @@ const asyncOnMessage = buildLazyMessage(contentMap)
 const API = new ChatGPTAPIBrowser({
     email: config.email,
     password: config.password,
-    debug: true,
+    debug: false,
     minimize: true,
     asyncOnMessage,
     captchaSolver: true,
