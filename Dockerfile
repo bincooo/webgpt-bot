@@ -4,9 +4,9 @@ WORKDIR /bot
 
 ADD package.json docker-entrypoint.sh /bot/
 
-RUN npm config set registry https://registry.npm.taobao.org \
-    && npm config set disturl https://npm.taobao.org/dist \
-    && npm config set puppeteer_download_host https://npm.taobao.org/mirrors
+#RUN npm config set registry https://registry.npm.taobao.org \
+#    && npm config set disturl https://npm.taobao.org/dist \
+#    && npm config set puppeteer_download_host https://npm.taobao.org/mirrors
 
 # Suppress an apt-key warning about standard out not being a terminal. Use in this script is safe.
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
@@ -14,11 +14,11 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 # Note: this installs the necessary libs to make the bundled version of Chromium that Puppeteer
 # installs, work.
 #RUN sed -i s/deb.debian.org/mirrors.aliyun.com/g /etc/apt/sources.list
-RUN sed -i s/deb.debian.org/mirrors.163.com/g /etc/apt/sources.list
+RUN sed -i s/deb.debian.org/mirrors.huaweicloud.com/g /etc/apt/sources.list
 RUN apt-get update \
   && apt-get install -y vim wget gnupg xvfb x11vnc \
-  && wget -q -O - http://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+  && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+  && sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \
   && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
   --no-install-recommends \

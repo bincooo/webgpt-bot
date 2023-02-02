@@ -1,12 +1,11 @@
 import { ChatGPTAPIBrowser } from 'cgpt';
 import pTimeout from 'p-timeout';
 import config from './config';
-import { retryRequest, buildLazyMsg } from './utils';
+import { retryRequest, onMessage } from './utils';
 
 let isWait = false
 const conversationMap = new Map();
 const contentMap = new Map();
-const asyncOnMessage = buildLazyMsg(contentMap)
 /*
 const chatGPT = new ChatGPTAPI({
   sessionToken: config.chatGPTSessionToken,
@@ -22,9 +21,8 @@ const API = new ChatGPTAPIBrowser({
     password: config.password,
     debug: false,
     minimize: true,
-    asyncOnMessage,
-    nopechaKey: true,
-    proxyServer: config.proxyServer
+    proxyServer: config.proxyServer,
+    userDataDir: '/tmp/' + config.email
 })
 await API.initSession()
 
@@ -32,7 +30,6 @@ function resetConversation(contactId: string) {
   if (conversationMap.has(contactId)) {
     const data = conversationMap.get(contactId)
     conversationMap.delete(contactId)
-	contentMap.delete(data.conversationId)
   }
 }
 
@@ -43,7 +40,7 @@ async function getConversation(contactId: string) {
   const res: any = await API.sendMessage('你好！')
   conversationMap.set(contactId, {
     conversationId: res.conversationId,
-	messageId: res.messageId
+	  messageId: res.messageId
   })
   
   return conversationMap.get(contactId)
@@ -59,23 +56,27 @@ function updateConversation(contactId: string, messageId: string) {
 
 async function getChatGPTReply(contact, content, contactId) {
   const data = await getConversation(contactId)
-  contentMap.set(data.conversationId, contact)
   // send a message and wait for the response
   const threeMinutesMs = 3 * 60 * 1000;
   const response = await pTimeout(API.sendMessage(content, {
-    conversationId: data.conversationId, parentMessageId: data.messageId
+    conversationId: data.conversationId, parentMessageId: data.messageId,
+    onProgress: (res) => {
+      onMessage(res, contact)
+    }
   }), {
     milliseconds: threeMinutesMs,
     message: 'ChatGPT timed out waiting for response',
   })
   console.log('response: ', response);
+  response.response = '[DONE]'
+  onMessage(response, contact)
   updateConversation(contactId, response.messageId)
   
   // response is a markdown-formatted string
   return 'ok'
 }
 
-export async function replyMessage(contact, content, contactId) {
+export async function replyMessage(contact, content, contactId, callback) {
   try {
     if (
       content.trim().toLocaleLowerCase() === config.resetKey.toLocaleLowerCase()
@@ -87,6 +88,7 @@ export async function replyMessage(contact, content, contactId) {
 	
     if (isWait) {
       console.log('ignore message, is waiting ...')
+      callback()
       return
     }
     isWait = true

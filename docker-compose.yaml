@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - 5900:5900
+    volumes:
+      - ./tmpDir:/tmp/{your email}
     extra_hosts:
-      - "master.io:10.0.20.17"
+      - "master.io:192.168.0.99"
 

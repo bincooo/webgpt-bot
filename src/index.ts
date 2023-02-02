@@ -20,22 +20,25 @@ async function onMessage(msg) {
 
   if (room && isText) {
     const topic = await room.topic();
+    const name = await contact.name()
     console.log(
-      `Group name: ${topic} talker: ${await contact.name()} content: ${content}`
+      `Group name: ${topic} talker: ${name} content: ${content}`
     );
-	let roomId = ''
-	if (roomMap.has(topic)) {
-	  roomId = roomMap.get(topic)
-	} else {
-	  roomId = uuid()
-	  roomMap.set(topic, roomId)
-	}
+  	let roomId = ''
+  	if (roomMap.has(topic)) {
+  	  roomId = roomMap.get(topic)
+  	} else {
+  	  roomId = uuid()
+  	  roomMap.set(topic, roomId)
+  	}
 
     const pattern = RegExp(`^@${receiver.name()}\\s+${config.groupKey}[\\s]*`);
     if (await msg.mentionSelf()) {
       if (pattern.test(content)) {
         const groupContent = content.replace(pattern, '');
-        replyMessage(room, groupContent, roomId);
+        replyMessage(room, groupContent, roomId, () => {
+          room.say('@' + name + '\n\n讲的太快了,休息一下吧~')
+        });
         return;
       } else {
         console.log(
@@ -50,7 +53,10 @@ async function onMessage(msg) {
         replyMessage(
           contact,
           content.substring(config.privateKey.length).trim(),
-          contactId
+          contactId,
+          () => {
+            contact.say('讲的太快了,休息一下吧~')
+          }
         );
       } else {
         console.log(
