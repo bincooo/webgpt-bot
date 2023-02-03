@@ -12,6 +12,7 @@
 - ✅ 支持 Docker 运行。
 - ✅ 支持 角色扮演：具体突破ai的语境封锁请查看 https://github.com/f/awesome-chatgpt-prompts
 - ✅ 支持设置重试次数，当请求 ChatGPT 错误时，会自动重试。
+- ✅ 支持登录opanai缓存，避免频繁登录
 - ❓ 捕获错误并重试。
 - ❓ 其他
 
