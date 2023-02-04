@@ -1,6 +1,6 @@
 export default {
-  email: '',
-  password: '',
+  email: 'seket97383@bitvoo.com',
+  password: 'a12345678',
   proxyServer: 'http://master.io:7890',
   // 设置获取消息的重试次数
   retryTimes: 3,
