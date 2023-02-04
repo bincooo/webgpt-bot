@@ -28,7 +28,7 @@ async function onMessage(msg) {
   	if (roomMap.has(topic)) {
   	  roomId = roomMap.get(topic)
   	} else {
-  	  roomId = uuid()
+  	  roomId = 'room-' + uuid()
   	  roomMap.set(topic, roomId)
   	}
 
@@ -36,6 +36,19 @@ async function onMessage(msg) {
     if (await msg.mentionSelf()) {
       if (pattern.test(content)) {
         const groupContent = content.replace(pattern, '');
+
+        if (
+          groupContent.trim().toLocaleLowerCase() === config.resetKey.toLocaleLowerCase()
+        ) {
+          if (roomMap.has(topic)) {
+            roomMap.delete(topic)
+            roomId = 'room-' + uuid()
+            roomMap.set(topic, roomId)
+          }
+          await contact.say('Previous conversation has been reset.');
+          return;
+        }
+
         replyMessage(room, groupContent, roomId, () => {
           room.say('@' + name + '\n\n讲的太快了,休息一下吧~')
         });
@@ -50,6 +63,7 @@ async function onMessage(msg) {
     console.log(`talker: ${alias} content: ${content}`);
     if (config.autoReply) {
       if (content.startsWith(config.privateKey)) {
+
         replyMessage(
           contact,
           content.substring(config.privateKey.length).trim(),

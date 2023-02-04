@@ -21,71 +21,31 @@ const API = new ChatGPTAPIBrowser({
     password: config.password,
     debug: false,
     minimize: true,
-    proxyServer: config.proxyServer,
-    userDataDir: '/tmp/' + config.email
+    proxyServer: config.proxyServer
 })
 await API.initSession()
 
-function resetConversation(contactId: string) {
-  if (conversationMap.has(contactId)) {
-    const data = conversationMap.get(contactId)
-    conversationMap.delete(contactId)
-  }
-}
 
-async function getConversation(contactId: string) {
-  if (conversationMap.has(contactId)) {
-    return conversationMap.get(contactId);
-  }
-  const res: any = await API.sendMessage('你好！')
-  conversationMap.set(contactId, {
-    conversationId: res.conversationId,
-	  messageId: res.messageId
-  })
-  
-  return conversationMap.get(contactId)
-}
-
-function updateConversation(contactId: string, messageId: string) {
-  if (conversationMap.has(contactId)) {
-    const data = conversationMap.get(contactId)
-	data.messageId = messageId
-	conversationMap.set(contactId, data)
-  }
-}
-
-async function getChatGPTReply(contact, content, contactId) {
-  const data = await getConversation(contactId)
+async function getChatGPTReply(contact, content, contactId, callback) {
   // send a message and wait for the response
-  const threeMinutesMs = 3 * 60 * 1000;
-  const response = await pTimeout(API.sendMessage(content, {
-    conversationId: data.conversationId, parentMessageId: data.messageId,
-    onProgress: (res) => {
-      onMessage(res, contact)
+  try {
+    await API.queueSendMessage(content, {
+      onProgress: (res) => {
+        onMessage(res, contact)
+      }
+    }, contactId)
+  } catch(err) {
+    if (err.statusCode == 5001) { // 队列满了
+      callback()
     }
-  }), {
-    milliseconds: threeMinutesMs,
-    message: 'ChatGPT timed out waiting for response',
-  })
-  console.log('response: ', response);
-  response.response = '[DONE]'
-  onMessage(response, contact)
-  updateConversation(contactId, response.messageId)
-  
+    console.log(err)
+  }
   // response is a markdown-formatted string
   return 'ok'
 }
 
 export async function replyMessage(contact, content, contactId, callback) {
   try {
-    if (
-      content.trim().toLocaleLowerCase() === config.resetKey.toLocaleLowerCase()
-    ) {
-      resetConversation(contactId);
-      await contact.say('Previous conversation has been reset.');
-      return;
-    }
-	
     if (isWait) {
       console.log('ignore message, is waiting ...')
       callback()
@@ -93,29 +53,28 @@ export async function replyMessage(contact, content, contactId, callback) {
     }
     isWait = true
 	
-	// 角色扮演
-	if (config.cosplay && config.cosplay.length > 0) {
-	  for (let i in config.cosplay) {
-	    const c = config.cosplay[i]
-		if (content.trim() === c.key) {
-		  await retryRequest(
-		    () => getChatGPTReply(contact, c.msg, contactId),
-		    config.retryTimes,
-		    500
-		  );
-		  isWait = false
-		  return
-		}
-	  }
-	}
-	
-    
+  	// 角色扮演
+    if (config.cosplay && config.cosplay.length > 0) {
+      for (let i in config.cosplay) {
+        const c = config.cosplay[i]
+        if (content.trim() === c.key) {
+          await retryRequest(
+           () => getChatGPTReply(contact, c.msg, contactId, callback),
+            config.retryTimes,
+            500
+          );
+          isWait = false
+          return
+        }
+      }
+    }
+
     const message = await retryRequest(
-      () => getChatGPTReply(contact, content, contactId),
+      () => getChatGPTReply(contact, content, contactId, callback),
       config.retryTimes,
       500
     );
-	isWait = false
+    isWait = false
 
     if (
       (contact.topic && contact?.topic() && config.groupReplyMode) ||
