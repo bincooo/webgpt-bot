@@ -16,7 +16,7 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 #RUN sed -i s/deb.debian.org/mirrors.aliyun.com/g /etc/apt/sources.list
 RUN sed -i s/deb.debian.org/mirrors.huaweicloud.com/g /etc/apt/sources.list
 RUN apt-get update \
-  && apt-get install -y vim wget gnupg xvfb x11vnc \
+  && apt-get install -y wget gnupg xvfb x11vnc \
   && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
   && sh -c 'echo "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
   && apt-get update \

@@ -3,7 +3,7 @@ export default {
   password: '',
   proxyServer: 'http://master.io:7890',
   // 设置chatpgt心跳间隔
-  pingMs: 60000 * 15, // 15分钟
+  pingMs: 60000 * 5, // 5分钟
   // 设置获取消息的重试次数
   retryTimes: 3,
   // 在群组中设置唤醒微信机器人的关键词

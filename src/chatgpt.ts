@@ -46,7 +46,7 @@ export async function replyMessage(contact, content, contactId, callback) {
   try {
     if (isWait) {
       console.log('ignore message, is waiting ...')
-      callback('———————————————\nError: 403\n脑瓜子嗡嗡的, 让我缓缓 ...')
+      callback('———————————————\nError: ignore\n脑瓜子嗡嗡的, 让我缓缓 ...')
       return
     }
     isWait = true
