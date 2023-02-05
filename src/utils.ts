@@ -65,7 +65,7 @@ const breakBlocks = [
 export const onMessage = (data: any, content: any) => {
   let cached = {
     idx: 0,
-    cachedMsg: ''
+    mag: ''
   }
   if (conversationMsgMap.has(data.conversationId)) {
     cached = conversationMsgMap.get(data.conversationId)
@@ -93,9 +93,9 @@ export const onMessage = (data: any, content: any) => {
 
     //console.log(index, data.response)
     if (data.response == '[DONE]') {
-      if (cached.idx < cached.cachedMsg.length) {
+      if (cached.idx < cached.msg.length) {
         // console.log('ts: ', cached.cachedMsg.substr(cached.idx))
-    	  const msg = cached.cachedMsg.substr(cached.idx)
+    	  const msg = cached.msg.substr(cached.idx)
     	  if (msg && msg.trim()) {
     	    content.say(msg + '\n\n- end -')
     	  } else {
@@ -109,7 +109,7 @@ export const onMessage = (data: any, content: any) => {
   	  conversationMsgMap.delete(data.conversationId)
       return
     }
-    cached.cachedMsg = data.response
+    cached.msg = data.response
     if (index > 0 && cached.idx < index) {
       // console.log('ts: ', data.response.substr(cached.idx, index))
     	const msg = data.response.substr(cached.idx, index)
