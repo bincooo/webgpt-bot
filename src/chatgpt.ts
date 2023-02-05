@@ -31,15 +31,18 @@ async function getChatGPTReply(contact, content, contactId, callback) {
   try {
     await API.queueSendMessage(content, {
       onProgress: (res) => {
+        if (res.error) {
+          if (res.error.statusCode == 403) {
+            callback('———————————————\nError: 403\n脑瓜子嗡嗡的, 让我缓缓 ...')
+          }
+          return
+        }
         onMessage(res, contact)
       }
     }, contactId)
   } catch(err) {
     if (err.statusCode == 5001) { // 队列满了
       callback('———————————————\nError: 5001\n讲的太快了, 休息一下吧 ~')
-    }
-    if (err.statusCode == 403) {
-      callback('———————————————\nError: 403\n脑瓜子嗡嗡的, 让我缓缓 ...')
     }
     console.log(err)
   }
