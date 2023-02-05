@@ -70,7 +70,7 @@ export const onMessage = (data: any, content: any) => {
   if (conversationMsgMap.has(data.conversationId)) {
     cached = conversationMsgMap.get(data.conversationId)
   } else {
-	  conversationMsgMap.set(data.conversationId, cached)
+    conversationMsgMap.set(data.conversationId, cached)
   }
 
   if (data.response) {
@@ -99,7 +99,7 @@ export const onMessage = (data: any, content: any) => {
     	  if (msg && msg.trim()) {
     	    content.say(msg + '\n\n- end -')
     	  } else {
-    	    content.say('- end -')
+          content.say('- end -')
     	  }
   	  
   	  

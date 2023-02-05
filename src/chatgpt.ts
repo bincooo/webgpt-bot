@@ -6,14 +6,6 @@ import { retryRequest, onMessage } from './utils';
 let isWait = false
 const conversationMap = new Map();
 const contentMap = new Map();
-/*
-const chatGPT = new ChatGPTAPI({
-  sessionToken: config.chatGPTSessionToken,
-  clearanceToken: config.clearanceToken,
-  userAgent: config.userAgent,
-});
-*/
-
 
 
 const API = new ChatGPTAPIBrowser({
@@ -21,6 +13,7 @@ const API = new ChatGPTAPIBrowser({
     password: config.password,
     debug: false,
     minimize: true,
+    heartbeatMs: config.pingMs,
     proxyServer: config.proxyServer
 })
 await API.initSession()
@@ -46,7 +39,6 @@ async function getChatGPTReply(contact, content, contactId, callback) {
     }
     console.log(err)
   }
-  // response is a markdown-formatted string
   return 'ok'
 }
 
