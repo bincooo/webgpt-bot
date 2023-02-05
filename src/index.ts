@@ -49,8 +49,8 @@ async function onMessage(msg) {
           return;
         }
 
-        replyMessage(room, groupContent, roomId, () => {
-          room.say('@' + name + '\n\n讲的太快了,休息一下吧~')
+        replyMessage(room, groupContent, roomId, (msg: string) => {
+          room.say('@' + name + '\n\n' + msg)
         });
         return;
       } else {
@@ -68,8 +68,8 @@ async function onMessage(msg) {
           contact,
           content.substring(config.privateKey.length).trim(),
           contactId,
-          () => {
-            contact.say('讲的太快了,休息一下吧~')
+          (msg: string) => {
+            contact.say(msg)
           }
         );
       } else {

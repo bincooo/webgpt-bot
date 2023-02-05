@@ -36,7 +36,10 @@ async function getChatGPTReply(contact, content, contactId, callback) {
     }, contactId)
   } catch(err) {
     if (err.statusCode == 5001) { // 队列满了
-      callback()
+      callback('--------------\nError: ' + err.statusText + '\n讲的太快了, 休息一下吧 ~')
+    }
+    if (err.statusCode == 403) {
+      callback('--------------\nError: 403\n脑瓜子嗡嗡的, 让我缓缓 ...')
     }
     console.log(err)
   }
@@ -48,7 +51,7 @@ export async function replyMessage(contact, content, contactId, callback) {
   try {
     if (isWait) {
       console.log('ignore message, is waiting ...')
-      callback()
+      callback('--------------\nError: 403\n脑瓜子嗡嗡的, 让我缓缓 ...')
       return
     }
     isWait = true
