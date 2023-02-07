@@ -84,11 +84,10 @@ export async function replyMessage(contact, content, contactId, callback) {
 
 function messageErrorHandler(error: any, callback: (msg: string) => void) {
   const currentTimeIsBusy = () => {
-    const timeSplit:Array<string> = new Date()
-      .toLocaleTimeString()
-      .split(':')
-    const hour = parseInt(timeSplit[0])
-    return (hour <= 6 || hour >= 20)
+    const hour: number = new Date()
+      .getHours()
+    // 有时差，自行调整
+    return (hour >= 12 && hour <= 22)
   }
 
   const append = !currentTimeIsBusy() ? ""
