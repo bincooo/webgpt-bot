@@ -94,13 +94,13 @@ function messageErrorHandler(error: any, callback: (msg: string) => void) {
     : "\n——————\n\n晚上20:00 ~ 凌晨06:00为国外高峰期, 尽量避开使用哦 ~"
 
 
-  if (err.statusCode == 5001) { // 队列满了
+  if (error.statusCode == 5001) { // 队列满了
     callback('———————————————\nError: 5001\n讲的太快了, 休息一下吧 ...' + append)
   } else if (res.error.statusCode === 403) {
     callback('———————————————\nError: 403\n脑瓜子嗡嗡的, 让我缓缓 ...' + append)
   } else if (res.error.statusCode === 429) {
     callback('———————————————\nError: 429\nemmm... 你好啰嗦吖, 一个小时后再来吧 ...' + append)
   } else {
-    callback(`发生错误\n${err} ${append}`)
+    callback(`发生错误\n${error} ${append}`)
   }
 }
